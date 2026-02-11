@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Be My Valentine 💖</title>
+
+  <style>
+    body {
+      height: 100vh;
+      margin: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #ffe6eb;
+      font-family: 'Comic Sans MS', cursive;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .card {
+      text-align: center;
+      background: white;
+      padding: 40px;
+      border-radius: 20px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+      position: relative;
+      z-index: 1;
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      color: #ff4d6d;
+      margin-bottom: 20px;
+    }
+
+    button {
+      font-size: 1.2rem;
+      padding: 10px 25px;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      margin: 10px;
+      transition: transform 0.3s ease;
+    }
+
+    #yes {
+      background: #ff4d6d;
+      color: white;
+      z-index: 2;
+      position: relative;
+    }
+
+    #no {
+      background: #ccc;
+      position: absolute;
+      z-index: 3;
+    }
+
+    .stickers {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      margin-bottom: 15px;
+    }
+
+    .stickers img {
+      width: 120px;
+      height: auto;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="card">
+    <div class="stickers">
+      <img src="bubu.gif" alt="Dudu">
+    </div>
+
+    <h1>Pavithra, Will you be my Valentine? 💘</h1>
+    <button id="yes">Yes 💖</button>
+    <button id="no">No 💔</button>
+  </div>
+
+  <script>
+    const noBtn = document.getElementById("no");
+    const yesBtn = document.getElementById("yes");
+    const card = document.querySelector(".card");
+
+    const noTexts = [
+      "No 💔",
+      "Are you sure?",
+      "Think again 😏",
+      "Don't break my heart 🥺",
+      "Thangam plss :)",
+      "Okay fine... YES 😳"
+    ];
+
+    let count = 0;
+    let firstInteraction = false;
+
+    const yesSizes = [1, 1.3, 1.6, 2, 2.5];
+
+    function growYesButton() {
+      yesBtn.style.transform = `scale(${yesSizes[count]})`;
+    }
+
+    function moveNoButtonRandomly() {
+      const padding = 20;
+      const x = Math.random() * (window.innerWidth - noBtn.offsetWidth - padding);
+      const y = Math.random() * (window.innerHeight - noBtn.offsetHeight - padding);
+      noBtn.style.left = `${x}px`;
+      noBtn.style.top = `${y}px`;
+    }
+
+    function handleNoInteraction() {
+      if (!firstInteraction) {
+        firstInteraction = true;
+        // Move NO button out of card into body
+        const rect = noBtn.getBoundingClientRect();
+        noBtn.style.position = "absolute";
+        noBtn.style.left = `${rect.left}px`;
+        noBtn.style.top = `${rect.top}px`;
+        noBtn.style.transform = "translate(0,0)";
+        noBtn.style.background = "#ffb6c1"; // pink button
+        document.body.appendChild(noBtn); // move to body
+      }
+
+      if (count < noTexts.length - 1) {
+        count++;
+        noBtn.textContent = noTexts[count];
+        moveNoButtonRandomly();
+        growYesButton();
+      }
+    }
+
+    // Desktop hover
+    noBtn.addEventListener("mouseenter", handleNoInteraction);
+
+    // Mobile touch
+    noBtn.addEventListener("touchstart", (e) => {
+      e.preventDefault();
+      handleNoInteraction();
+    });
+
+    // Final trap
+    noBtn.addEventListener("click", () => {
+      if (count >= noTexts.length - 1) {
+        yesBtn.click();
+      }
+    });
+
+    yesBtn.addEventListener("click", () => {
+      document.body.innerHTML = `
+        <div style="text-align:center;">
+            <div class="stickers">
+      <img src="yes.jpg" alt="Dudu">
+    </div>
+          <h1 style="color:#ff4d6d;">YAYYYY!! 💖🥰</h1>
+          <p>You’re officially my Valentine ❤️</p>
+          <p>
+You are the very brightest star of my life. Without you, I would not endure the dark night. I love you! Happy Valentine's Day!</p>
+        </div>
+      `;
+    });
+
+    // Ensure NO is positioned correctly right of YES after layout
+    window.onload = () => {
+      const yesRect = yesBtn.getBoundingClientRect();
+      const cardRect = card.getBoundingClientRect();
+      noBtn.style.left = `${yesRect.right - cardRect.left + 10}px`;
+      noBtn.style.top = `${yesRect.top - cardRect.top}px`;
+    };
+  </script>
+
+</body>
+</html>
